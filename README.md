@@ -1,151 +1,155 @@
-# #TWSThreeTierAppChallenge
+🚀 Three-Tier Web Application on AWS EKS  
 
-## Overview
-This repository hosts the `#TWSThreeTierAppChallenge` for the TWS community. 
-The challenge involves deploying a Three-Tier Web Application using ReactJS, NodeJS, and MongoDB, with deployment on AWS EKS. Participants are encouraged to deploy the application, add creative enhancements, and submit a Pull Request (PR). Merged PRs will earn exciting prizes!
+🧩 Overview  
 
-**Get The Challenge here**
+This project demonstrates the deployment of a **Three-Tier Web Application** (ReactJS frontend, NodeJS backend, and MongoDB database) on **Amazon EKS (Elastic Kubernetes Service)**.  
+It includes complete setup steps — from IAM configuration to deploying the app, integrating monitoring tools, and using AWS Load Balancer with Kubernetes.  
 
-[![YouTube Video](https://img.youtube.com/vi/tvWQRTbMS1g/maxresdefault.jpg)](https://youtu.be/tvWQRTbMS1g?si=eki-boMemxr4PU7-)
 
-## Prerequisites
-- Basic knowledge of Docker, and AWS services.
-- An AWS account with necessary permissions.
+⚙️ Prerequisites  
 
-## Challenge Steps
-- [Application Code](#application-code)
-- [Jenkins Pipeline Code](#jenkins-pipeline-code)
-- [Jenkins Server Terraform](#jenkins-server-terraform)
-- [Kubernetes Manifests Files](#kubernetes-manifests-files)
-- [Project Details](#project-details)
+Before starting, ensure you have:  
+- ✅ Basic knowledge of **Docker**, **Kubernetes**, and **AWS**  
+- ✅ An **AWS Account** with required permissions  
+- ✅ Access to an **EC2 Instance** (Ubuntu recommended)  
 
-## Application Code
-The `Application-Code` directory contains the source code for the Three-Tier Web Application. Dive into this directory to explore the frontend and backend implementations.
+📁 Project Structure  
 
-## Jenkins Pipeline Code
-In the `Jenkins-Pipeline-Code` directory, you'll find Jenkins pipeline scripts. These scripts automate the CI/CD process, ensuring smooth integration and deployment of your application.
+| Directory | Description |
+|------------|-------------|
+| **Application-Code/** | Contains the complete ReactJS + NodeJS source code |
+| **Kubernetes-Manifests-Files/** | Contains all Kubernetes YAML manifests for deployment |
+| **buildspec.yml / Dockerfile** | Used for CI/CD integration and containerization |
 
-## Jenkins Server Terraform
-Explore the `Jenkins-Server-TF` directory to find Terraform scripts for setting up the Jenkins Server on AWS. These scripts simplify the infrastructure provisioning process.
+🛠️ Tools & Technologies  
 
-## Kubernetes Manifests Files
-The `Kubernetes-Manifests-Files` directory holds Kubernetes manifests for deploying your application on AWS EKS. Understand and customize these files to suit your project needs.
+| Category | Tools |
+|-----------|--------|
+| **Cloud & Infrastructure** | AWS CLI, EC2, EKS, IAM |
+| **Containerization** | Docker, Docker Compose |
+| **Orchestration** | Kubernetes (kubectl, eksctl) |
+| **Monitoring** | Helm, Prometheus, Grafana |
+| **CI/CD** | GitHub Actions / AWS CodePipeline |
 
-## Project Details
-🛠️ **Tools Explored:**
-- Terraform & AWS CLI for AWS infrastructure
-- Jenkins, Sonarqube, Terraform, Kubectl, and more for CI/CD setup
-- Helm, Prometheus, and Grafana for Monitoring
-- ArgoCD for GitOps practices
+ 🌐 Architecture Overview  
 
-🚢 **High-Level Overview:**
-- IAM User setup & Terraform magic on AWS
-- Jenkins deployment with AWS integration
-- EKS Cluster creation & Load Balancer configuration
-- Private ECR repositories for secure image management
-- Helm charts for efficient monitoring setup
-- GitOps with ArgoCD - the cherry on top!
+A simplified three-tier setup:  
+- **Frontend:** ReactJS served via Node.js  
+- **Backend:** Express.js API connected to MongoDB  
+- **Database:** MongoDB (persistent volume enabled)  
+- **Deployment:** EKS cluster with Load Balancer for external access  
 
-📈 **The journey covered everything from setting up tools to deploying a Three-Tier app, ensuring data persistence, and implementing CI/CD pipelines.**
+🚀 Project Journey  
 
-## Getting Started
-To get started with this project, refer to our [comprehensive guide](https://amanpathakdevops.medium.com/advanced-end-to-end-devsecops-kubernetes-three-tier-project-using-aws-eks-argocd-prometheus-fbbfdb956d1a) that walks you through IAM user setup, infrastructure provisioning, CI/CD pipeline configuration, EKS cluster creation, and more.
+From scratch to deployment, the project covers:  
+- IAM setup for secure access  
+- EKS cluster creation  
+- Load Balancer integration  
+- Docker image build and push to ECR  
+- CI/CD automation and monitoring integration  
 
-### Step 1: IAM Configuration
-- Create a user `eks-admin` with `AdministratorAccess`.
-- Generate Security Credentials: Access Key and Secret Access Key.
 
-### Step 2: EC2 Setup
-- Launch an Ubuntu instance in your favourite region (eg. region `us-west-2`).
-- SSH into the instance from your local machine.
+🧭 Step-by-Step Implementation  
 
-### Step 3: Install AWS CLI v2
-``` shell
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-sudo apt install unzip
-unzip awscliv2.zip
-sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin --update
-aws configure
-```
+🪪 Step 1: IAM Configuration  
 
-### Step 4: Install Docker
-``` shell
-sudo apt-get update
-sudo apt install docker.io
-docker ps
-sudo chown $USER /var/run/docker.sock
-```
+Create an IAM user for EKS management.  
 
-### Step 5: Install kubectl
-``` shell
-curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin
-kubectl version --short --client
-```
+-  aws iam create-user --user-name eks-admin
+-  aws iam attach-user-policy --user-name eks-admin --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
 
-### Step 6: Install eksctl
-``` shell
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-sudo mv /tmp/eksctl /usr/local/bin
-eksctl version
-```
+ Generate Access Key and Secret Access Key, then configure them:
 
-### Step 7: Setup EKS Cluster
-``` shell
-eksctl create cluster --name three-tier-cluster --region us-west-2 --node-type t2.medium --nodes-min 2 --nodes-max 2
-aws eks update-kubeconfig --region us-west-2 --name three-tier-cluster
-kubectl get nodes
-```
+- aws configure
 
-### Step 8: Run Manifests
-``` shell
-kubectl create namespace workshop
-kubectl apply -f .
-kubectl delete -f .
-```
 
-### Step 9: Install AWS Load Balancer
-``` shell
-curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
-aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json
-eksctl utils associate-iam-oidc-provider --region=us-west-2 --cluster=three-tier-cluster --approve
-eksctl create iamserviceaccount --cluster=three-tier-cluster --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::626072240565:policy/AWSLoadBalancerControllerIAMPolicy --approve --region=us-west-2
-```
+💻 Step 2: EC2 Instance Setup
 
-### Step 10: Deploy AWS Load Balancer Controller
-``` shell
-sudo snap install helm --classic
-helm repo add eks https://aws.github.io/eks-charts
-helm repo update eks
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=my-cluster --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
-kubectl get deployment -n kube-system aws-load-balancer-controller
-kubectl apply -f full_stack_lb.yaml
-```
+ - Launch an Ubuntu EC2 instance in your preferred region (e.g., us-west-2).
+ - Connect via SSH: ssh -i "your-key.pem" ubuntu@<public-ip>
 
-### Cleanup
-- To delete the EKS cluster:
-``` shell
-eksctl delete cluster --name three-tier-cluster --region us-west-2
-```
-- To clean up rest of the stuff and not incure any cost
-```
-Stop or Terminate the EC2 instance created in step 2.
-Delete the Load Balancer created in step 9 and 10.
-Go to EC2 console, access security group section and delete security groups created in previous steps
-```
+⚙️ Step 3: Install AWS CLI v2
 
-## Contribution Guidelines
-- Fork the repository and create your feature branch.
-- Deploy the application, adding your creative enhancements.
-- Ensure your code adheres to the project's style and contribution guidelines.
-- Submit a Pull Request with a detailed description of your changes.
+- curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+- sudo apt install unzip -y
+- unzip awscliv2.zip
+- sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin --update
+- aws --version
 
-## Rewards
-- Successful PR merges will be eligible for exciting prizes!
+🐳 Step 4: Install Docker & Docker Compose  ( this is by your choice if need than we can install) 
 
-## Support
-For any queries or issues, please open an issue in the repository.
+- sudo apt-get update -y
+- sudo apt install docker.io -y
+- sudo chown $USER /var/run/docker.sock
+- docker --version
+- docker ps
 
----
-Happy Learning! 🚀👨‍💻👩‍💻
+☸️ Step 5: Install kubectl
+
+- curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+- chmod +x ./kubectl
+- sudo mv ./kubectl /usr/local/bin
+- kubectl version --short --client
+
+⚡ Step 6: Install eksctl
+
+- curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+- sudo mv /tmp/eksctl /usr/local/bin
+- eksctl version
+
+☁️ Step 7: Create EKS Cluster  ( here we need to take care that need to choose the region and cluster name that we req and the ec2 - type and size )
+eksctl create cluster \
+  --name three-tier-cluster \
+  --region ap-south-1 \
+  --node-type t2.medium \
+  --nodes-min 2 \
+  --nodes-max 2
+
+- aws eks update-kubeconfig --region ap-south-1 --name three-tier-cluster
+- kubectl get nodes
+
+📦 Step 8: Apply Kubernetes Manifests
+
+- kubectl create namespace three-tier
+- kubectl apply -f Kubernetes-Manifests-Files/
+
+⚙️ Step 9: Install AWS Load Balancer Controller IAM Policy
+
+- curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+aws iam create-policy \
+  --policy-name AWSLoadBalancerControllerIAMPolicy \
+  --policy-document file://iam_policy.json
+
+- eksctl utils associate-iam-oidc-provider --region us-west-2 --cluster three-tier-cluster --approve
+
+eksctl create iamserviceaccount \
+  --cluster three-tier-cluster \
+  --namespace kube-system \
+  --name aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn arn:aws:iam::<your-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve \
+  --region ap-south-1
+
+
+⚙️ Step 9: Install AWS Load Balancer Controller IAM Policy
+
+- curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+aws iam create-policy \
+  --policy-name AWSLoadBalancerControllerIAMPolicy \
+  --policy-document file://iam_policy.json
+
+- eksctl utils associate-iam-oidc-provider --region us-west-2 --cluster three-tier-cluster --approve
+
+eksctl create iamserviceaccount \
+  --cluster three-tier-cluster \
+  --namespace kube-system \
+  --name aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn arn:aws:iam::<your-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve \
+  --region us-west-2
+
+## NOTES 
+
+- need to make sure all the data that is needed given properly in the manifest file the ports and all 
